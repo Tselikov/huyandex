@@ -26,7 +26,7 @@ const appData = {
   ]
 };
 
-// Текущее состояние
+// Состояние
 let editingBookmarkIndex = -1;
 
 // Инициализация
@@ -35,14 +35,15 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function initializeApp() {
-  loadCurrencyRates();
-  renderYandexServices();
-  initializeBookmarks();
-  setupEventListeners();
-  setupGoogleServices();
+  loadCurrencyRates();       // Курсы ЦБ РФ
+  renderYandexServices();    // Плитки Яндекс-сервисов (ссылки в этой вкладке)
+  initializeBookmarks();     // Локальные закладки
+  setupEventListeners();     // Модалки и т.п.
+  setupGoogleServices();     // Заглушка — сейчас список статичен в HTML
 }
 
-/* Вспомогательные */
+/* ================= УТИЛИТЫ ================= */
+
 function getFaviconUrl(url) {
   try {
     const domain = new URL(url).hostname;
@@ -52,40 +53,51 @@ function getFaviconUrl(url) {
   }
 }
 
-/* Курсы валют (демо) */
+/* ============== КУРСЫ ВАЛЮТ (ЦБ РФ) ============== */
+
 async function loadCurrencyRates() {
+  const usdEl = document.getElementById("usd-rate");
+  const eurEl = document.getElementById("eur-rate");
+
   try {
-    setTimeout(() => {
-      document.getElementById("usd-rate").textContent = "95.50";
-      document.getElementById("eur-rate").textContent = "103.20";
-    }, 1000);
+    const resp = await fetch("https://www.cbr-xml-daily.ru/daily_json.js", { cache: "no-store" });
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const data = await resp.json();
+
+    const usd = data?.Valute?.USD?.Value;
+    const eur = data?.Valute?.EUR?.Value;
+
+    usdEl.textContent = typeof usd === "number" ? usd.toFixed(2) : "н/д";
+    eurEl.textContent = typeof eur === "number" ? eur.toFixed(2) : "н/д";
   } catch (e) {
-    document.getElementById("usd-rate").textContent = "н/д";
-    document.getElementById("eur-rate").textContent = "н/д";
+    console.error("Ошибка загрузки курсов ЦБ:", e);
+    if (usdEl) usdEl.textContent = "н/д";
+    if (eurEl) eurEl.textContent = "н/д";
   }
 }
 
-/* Яндекс-сервисы: ссылки в той же вкладке */
+/* ============== ЯНДЕКС-СЕРВИСЫ ============== */
+
 function renderYandexServices() {
   const grid = document.getElementById("yandex-services-grid");
   if (!grid) return;
   grid.innerHTML = "";
 
   appData.yandexServices.forEach(s => {
+    // Используем реальную ссылку <a> — ЛКМ открывает в этой вкладке, средняя — в новой.
     const a = document.createElement("a");
     a.className = "service-item";
-    a.href = s.url; // без target — откроется в текущей вкладке
+    a.href = s.url; // без target — текущая вкладка
     a.innerHTML = `
       <div class="service-icon">${s.icon}</div>
       <div class="service-name">${s.name}</div>
     `;
-    // Нормальная ссылка уже поддерживает среднюю кнопку мыши нативно,
-    // дополнительных обработчиков не требуется.
     grid.appendChild(a);
   });
 }
 
-/* Закладки */
+/* ============== ЗАКЛАДКИ ============== */
+
 function initializeBookmarks() {
   const stored = JSON.parse(localStorage.getItem("bookmarks") || "[]");
   if (!stored.length) {
@@ -116,24 +128,21 @@ function renderBookmarks() {
       </div>
     `;
 
-    // ЛКМ по карточке — навигация в этой же вкладке
+    // ЛКМ — открыть в текущей вкладке
     item.addEventListener("click", (e) => {
-      if (e.target.closest(".bookmark-actions")) return; // не навигируем при клике по кнопкам
-      // Если клик средней кнопкой — этот обработчик не сработает (он для click/LKM),
-      // отдельный обработчик для MMB ниже.
+      if (e.target.closest(".bookmark-actions")) return;
       location.href = b.url;
     });
 
-    // Средняя кнопка мыши (MMB) — открыть в новой вкладке
-    // Используем mousedown, потому что у div нет нативного поведения ссылки.
+    // Средняя кнопка — открыть в новой вкладке (для div делаем вручную)
     item.addEventListener("mousedown", (e) => {
-      if (e.button === 1) { // 1 — средняя кнопка
-        e.preventDefault(); // чтобы не прокручивало страницу
+      if (e.button === 1) {
+        e.preventDefault();
         window.open(b.url, "_blank", "noopener");
       }
     });
 
-    // Кнопки управления
+    // Кнопки карточки
     item.querySelector(".bookmark-edit").addEventListener("click", (e) => {
       e.stopPropagation();
       openEditBookmark(idx);
@@ -164,17 +173,12 @@ function setupEventListeners() {
     document.getElementById("bookmarkName").focus();
   });
 
-  document.querySelectorAll("[data-close]").forEach(b => {
-    b.addEventListener("click", closeModals);
-  });
-
+  document.querySelectorAll("[data-close]").forEach(b => b.addEventListener("click", closeModals));
   document.getElementById("saveBookmarkBtn")?.addEventListener("click", saveBookmark);
   document.getElementById("updateBookmarkBtn")?.addEventListener("click", updateBookmark);
 
   [addModal, editModal].forEach(m => {
-    m?.addEventListener("click", (e) => {
-      if (e.target === m) closeModals();
-    });
+    m?.addEventListener("click", (e) => { if (e.target === m) closeModals(); });
   });
 }
 
@@ -203,8 +207,10 @@ function openEditBookmark(index) {
   const data = JSON.parse(localStorage.getItem("bookmarks") || "[]");
   const b = data[index];
   if (!b) return;
+
   document.getElementById("editBookmarkName").value = b.name;
   document.getElementById("editBookmarkUrl").value = b.url;
+
   const modal = document.getElementById("editBookmarkModal");
   modal.classList.remove("hidden");
   modal.setAttribute("aria-hidden", "false");
@@ -215,6 +221,7 @@ function updateBookmark() {
   if (editingBookmarkIndex < 0) return;
   const name = document.getElementById("editBookmarkName").value.trim();
   const url = document.getElementById("editBookmarkUrl").value.trim();
+
   const data = JSON.parse(localStorage.getItem("bookmarks") || "[]");
   data[editingBookmarkIndex] = { ...data[editingBookmarkIndex], name, url };
   localStorage.setItem("bookmarks", JSON.stringify(data));
@@ -229,21 +236,30 @@ function deleteBookmark(index) {
   renderBookmarks();
 }
 
-/* Drag & drop */
+/* ===== Drag & Drop для закладок ===== */
+
 let dragSrcIndex = -1;
-function dragStart(e){ dragSrcIndex = Number(e.currentTarget.dataset.index); e.dataTransfer.effectAllowed = "move"; }
-function dragOver(e){ e.preventDefault(); e.dataTransfer.dropEffect = "move"; }
-function drop(e){
+
+function dragStart(e) {
+  dragSrcIndex = Number(e.currentTarget.dataset.index);
+  e.dataTransfer.effectAllowed = "move";
+}
+function dragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = "move";
+}
+function drop(e) {
   e.stopPropagation();
   const targetIndex = Number(e.currentTarget.dataset.index);
   if (dragSrcIndex === targetIndex) return;
+
   const data = JSON.parse(localStorage.getItem("bookmarks") || "[]");
   const [moved] = data.splice(dragSrcIndex, 1);
   data.splice(targetIndex, 0, moved);
   localStorage.setItem("bookmarks", JSON.stringify(data));
   renderBookmarks();
 }
-function dragEnd(){ dragSrcIndex = -1; }
+function dragEnd() { dragSrcIndex = -1; }
 
-/* Заглушка на будущее — если потребуется динамика сайдбара Google */
-function setupGoogleServices(){ /* статический список в index.html */ }
+/* ===== Google services (пока статично в HTML) ===== */
+function setupGoogleServices(){ /* ничего не делаем */ }
