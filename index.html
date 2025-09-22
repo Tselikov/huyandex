@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Стартовая страница</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <!-- Сайдбар сервисов Google -->
+  <aside class="google-services-sidebar">
+    <a class="google-service" href="https://mail.google.com">
+      <span class="google-service-icon">✉️</span><span class="google-service-name">Gmail</span>
+    </a>
+    <a class="google-service" href="https://contacts.google.com">
+      <span class="google-service-icon">👤</span><span class="google-service-name">Контакты</span>
+    </a>
+    <a class="google-service" href="https://translate.google.com">
+      <span class="google-service-icon">🔤</span><span class="google-service-name">Переводчик</span>
+    </a>
+    <a class="google-service" href="https://photos.google.com">
+      <span class="google-service-icon">📷</span><span class="google-service-name">Фото</span>
+    </a>
+    <a class="google-service" href="https://drive.google.com">
+      <span class="google-service-icon">💾</span><span class="google-service-name">Диск</span>
+    </a>
+    <a class="google-service" href="https://keep.google.com">
+      <span class="google-service-icon">📝</span><span class="google-service-name">Keep</span>
+    </a>
+    <a class="google-service" href="https://play.google.com">
+      <span class="google-service-icon">📱</span><span class="google-service-name">Play Маркет</span>
+    </a>
+    <a class="google-service" href="https://youtube.com">
+      <span class="google-service-icon">▶️</span><span class="google-service-name">YouTube</span>
+    </a>
+  </aside>
+
+  <main class="container">
+    <!-- Яндекс -->
+    <section class="yandex-section">
+      <h1 class="yandex-logo">Яндекс</h1>
+
+      <form class="search-form" action="https://yandex.ru/search/" method="get">
+        <input class="search-input" type="text" name="text" placeholder="Найти в Яндексе" aria-label="Поиск в Яндексе"/>
+        <button class="search-btn" type="submit">Поиск</button>
+      </form>
+
+      <div class="currency-block">
+        <div class="currency-item">USD: <span id="usd-rate">загрузка...</span> ₽</div>
+        <div class="currency-item">EUR: <span id="eur-rate">загрузка...</span> ₽</div>
+      </div>
+
+      <div class="yandex-services">
+        <div id="yandex-services-grid" class="services-grid"></div>
+      </div>
+    </section>
+
+    <!-- Google -->
+    <section class="google-section">
+      <h2 class="google-logo">Google</h2>
+
+      <form class="search-form" action="https://www.google.com/search" method="get">
+        <input class="search-input" type="text" name="q" placeholder="Поиск Google" aria-label="Поиск в Google"/>
+        <button class="search-btn" type="submit">Поиск</button>
+      </form>
+
+      <!-- Кнопки «Голосовой» и «Поиск по картинке» удалены -->
+      <div class="google-buttons"></div>
+    </section>
+
+    <!-- Закладки -->
+    <section class="bookmarks-section">
+      <h2 class="section-title">Закладки</h2>
+      <div id="bookmarks-grid" class="bookmarks-grid"></div>
+      <button id="add-bookmark-btn" class="add-bookmark-btn">+ Добавить закладку</button>
+    </section>
+  </main>
+
+  <!-- Модальное окно: Добавить -->
+  <div id="addBookmarkModal" class="modal hidden" aria-hidden="true">
+    <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="addBookmarkTitle">
+      <h3 id="addBookmarkTitle">Добавить закладку</h3>
+      <div class="form-group">
+        <label class="form-label" for="bookmarkName">Название:</label>
+        <input id="bookmarkName" class="form-control" type="text" placeholder="Например: Wikipedia"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="bookmarkUrl">URL:</label>
+        <input id="bookmarkUrl" class="form-control" type="url" placeholder="https://example.com"/>
+      </div>
+      <div class="modal-actions">
+        <button id="saveBookmarkBtn" class="btn btn--primary">Сохранить</button>
+        <button data-close class="btn btn--secondary">Отмена</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Модальное окно: Редактировать -->
+  <div id="editBookmarkModal" class="modal hidden" aria-hidden="true">
+    <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="editBookmarkTitle">
+      <h3 id="editBookmarkTitle">Редактировать закладку</h3>
+      <div class="form-group">
+        <label class="form-label" for="editBookmarkName">Название:</label>
+        <input id="editBookmarkName" class="form-control" type="text"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="editBookmarkUrl">URL:</label>
+        <input id="editBookmarkUrl" class="form-control" type="url"/>
+      </div>
+      <div class="modal-actions">
+        <button id="updateBookmarkBtn" class="btn btn--primary">Сохранить изменения</button>
+        <button data-close class="btn btn--secondary">Отмена</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

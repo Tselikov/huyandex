@@ -1,0 +1,220 @@
+/* ===== Переменные/база (как в вашем текущем файле) ===== */
+:root {
+  --color-white: #fff;
+  --color-gray-200: #f5f5f5;
+  --color-gray-300: #a7a9a9;
+  --color-slate-500: #626c71;
+  --color-slate-900: #13343b;
+  --color-brown-600-rgb: 94,82,64;
+
+  --color-background: #ffffff;
+  --color-surface: #ffffff;
+  --color-text: var(--color-slate-900);
+  --color-text-secondary: var(--color-slate-500);
+
+  /* Палитра разделов (как было): */
+  --color-bg-1: rgba(59,130,246,0.08); /* светлый синий для блока Google */
+  --color-border: rgba(var(--color-brown-600-rgb), 0.2);
+
+  /* Прочее */
+  --yandex-yellow: #ffcc00;
+  --yandex-yellow-hover: #e6b800;
+
+  --font-family-base: "Inter", -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-size-xs: 11px;
+  --font-size-sm: 12px;
+  --font-size-base: 14px;
+  --font-size-lg: 16px;
+  --font-size-xl: 18px;
+  --font-size-3xl: 24px;
+  --font-size-4xl: 30px;
+
+  --space-0: 0;
+  --space-2: 2px;
+  --space-4: 4px;
+  --space-6: 6px;
+  --space-8: 8px;
+  --space-10: 10px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-20: 20px;
+  --space-24: 24px;
+  --space-32: 32px;
+
+  --radius-sm: 6px;
+  --radius-base: 8px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.04), 0 2px 4px -1px rgba(0,0,0,0.02);
+}
+
+/* База */
+html { font-size: var(--font-size-base); }
+body {
+  margin: 0; padding: 0;
+  color: var(--color-text);
+  background: var(--color-background);
+  font-family: var(--font-family-base);
+}
+* { box-sizing: border-box; }
+h1,h2,h3 { margin: 0; color: var(--color-text); }
+h1 { font-size: var(--font-size-4xl); }
+h2 { font-size: var(--font-size-3xl); }
+
+/* Контейнер */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--space-16);
+}
+
+/* Кнопки */
+.btn { display: inline-flex; align-items: center; justify-content: center; border: 0; cursor: pointer; }
+.btn--primary { background: var(--yandex-yellow); color: #142; padding: var(--space-8) var(--space-16); border-radius: var(--radius-base); }
+.btn--primary:hover { background: var(--yandex-yellow-hover); }
+.btn--secondary { background: var(--color-gray-200); color: var(--color-text); padding: var(--space-8) var(--space-16); border-radius: var(--radius-base); border: 1px solid var(--color-border); }
+
+/* Поля ввода */
+.form-control {
+  display: block; width: 100%;
+  padding: var(--space-8) var(--space-12);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface); color: var(--color-text);
+  border-radius: var(--radius-base);
+}
+
+/* ===== Сайдбар Google сервисов ===== */
+.google-services-sidebar{
+  position: fixed; top: var(--space-16); right: var(--space-16);
+  display: flex; flex-direction: column;
+  gap: var(--space-4);                 /* уплотнение */
+  background: var(--color-bg-1);       /* как у блока Google */
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-10);
+  z-index: 100;
+}
+.google-service{
+  display: flex; align-items: center; gap: var(--space-6);
+  padding: var(--space-4) var(--space-8); border-radius: var(--radius-base);
+  text-decoration: none; color: var(--color-text);
+}
+.google-service:hover{ background: var(--color-gray-200); }
+.google-service-icon{ font-size: var(--font-size-lg); flex-shrink: 0; }
+.google-service-name{ font-size: var(--font-size-sm); }
+
+/* Мобилки: внизу, компактно */
+@media (max-width: 768px){
+  .google-services-sidebar{ position: relative; top: auto; right: auto; margin: var(--space-16) auto; width: fit-content; }
+}
+@media (max-width: 480px){
+  .google-services-sidebar{ flex-direction: row; flex-wrap: wrap; gap: var(--space-4); }
+  .google-service{ min-width: auto; padding: var(--space-4) var(--space-6); }
+  .google-service-name{ display: none; }
+}
+
+/* ===== Яндекс секция ===== */
+.yandex-section{ padding: var(--space-32) 0; text-align: center; }
+.yandex-logo{ margin-bottom: var(--space-24); }
+
+.search-form{
+  display: flex; gap: var(--space-8);
+  max-width: 600px; margin: 0 auto var(--space-24) auto; align-items: center;
+}
+.search-input{
+  flex: 1; padding: var(--space-12) var(--space-16);
+  border: 2px solid var(--color-border); border-radius: var(--radius-base);
+  background: var(--color-surface); color: var(--color-text); font-size: var(--font-size-lg);
+}
+.search-input:focus{ outline: none; border-color: var(--yandex-yellow); }
+.search-btn{
+  padding: var(--space-12) var(--space-20); background: var(--yandex-yellow);
+  color: #111; border-radius: var(--radius-base); border: none; cursor: pointer;
+}
+.search-btn:hover{ background: var(--yandex-yellow-hover); }
+
+/* Курсы валют */
+.currency-block{ display: flex; gap: var(--space-32); justify-content: center; flex-wrap: wrap; }
+.currency-item{
+  background: var(--color-gray-200); padding: var(--space-8) var(--space-16);
+  border-radius: var(--radius-base); border: 1px solid var(--color-border);
+  font-weight: 500;
+}
+
+/* Сервисы Яндекса */
+.yandex-services{ padding: var(--space-24) 0; }
+.services-grid{
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(120px,1fr));
+  gap: var(--space-12); max-width: 700px; margin: 0 auto;
+}
+.service-item{
+  background: var(--color-surface); color: var(--color-text);
+  padding: var(--space-12); border-radius: var(--radius-base);
+  text-align: center; border: 1px solid var(--color-border);
+  display: flex; flex-direction: column; align-items: center; gap: var(--space-6);
+  text-decoration: none;
+}
+.service-item:hover{ background: var(--color-gray-200); }
+.service-icon{ font-size: var(--font-size-xl); }
+.service-name{ font-size: var(--font-size-sm); font-weight: 500; }
+
+/* ===== Google секция ===== */
+.google-section{
+  padding: var(--space-32) 0; text-align: center;
+  background: var(--color-bg-1); /* эталон для сайдбара */
+}
+.google-logo{ margin-bottom: var(--space-24); }
+/* Контейнер под доп.кнопки — пустой, скрывать не обязательно, но оставим ноль отступов */
+.google-buttons{ margin-top: 0; padding: 0; }
+
+/* ===== Закладки ===== */
+.bookmarks-section{ padding: var(--space-32) 0; }
+.section-title{ text-align: center; margin-bottom: var(--space-24); }
+
+.bookmarks-grid{
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(120px,1fr));
+  gap: var(--space-12); max-width: 900px; margin: 0 auto var(--space-24) auto;
+}
+.bookmark-item{
+  background: var(--color-surface); border: 1px solid var(--color-border);
+  border-radius: var(--radius-base); padding: var(--space-12);
+  text-align: center; display: flex; flex-direction: column; gap: var(--space-6); align-items: center;
+  position: relative; cursor: pointer;
+}
+.bookmark-item:hover{ background: var(--color-gray-200); }
+.bookmark-icon{ width: 24px; height: 24px; border-radius: var(--radius-sm); }
+.bookmark-name{ font-size: var(--font-size-sm); font-weight: 500; }
+
+.bookmark-actions{ position: absolute; top: var(--space-2); right: var(--space-2); display: none; gap: var(--space-2); }
+.bookmark-item:hover .bookmark-actions{ display: flex; }
+.bookmark-edit, .bookmark-delete{
+  width: 18px; height: 18px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--color-surface); border: 1px solid var(--color-border);
+  font-size: var(--font-size-xs); cursor: pointer;
+}
+
+.add-bookmark-btn{
+  display: block; margin: 0 auto; padding: var(--space-12) var(--space-24);
+  background: var(--color-surface); border: 2px dashed var(--color-border);
+  border-radius: var(--radius-base); cursor: pointer;
+}
+
+/* ===== Модалки ===== */
+.modal{ position: fixed; inset: 0; background: rgba(0,0,0,.5); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+.modal.hidden{ display: none; }
+.modal-content{
+  background: var(--color-surface); color: var(--color-text);
+  padding: var(--space-24); border-radius: var(--radius-lg);
+  width: 90%; max-width: 400px; border: 1px solid var(--color-border); box-shadow: var(--shadow-md);
+}
+.modal-content h3{ margin-bottom: var(--space-16); }
+.modal-actions{ display: flex; gap: var(--space-8); justify-content: flex-end; margin-top: var(--space-16); }
+
+/* Адаптивность */
+@media (max-width: 768px){
+  .search-form{ flex-direction: column; gap: var(--space-12); }
+}
